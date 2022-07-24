@@ -20,8 +20,8 @@
 //! read.read(&mut buf).ok();
 //! ```
 
+#![cfg(test)]
 #![feature(test)]
-#![feature(core_intrinsics)]
 
 #[cfg(test)]
 extern crate test;
@@ -33,8 +33,6 @@ mod tests_exact;
 
 #[cfg(test)]
 mod bench;
-
-use std::intrinsics::unlikely;
 
 /// Peekable for IO-read. Works by buffering peeked data.
 /// Also supports checkpoints.
@@ -205,7 +203,7 @@ impl<Read: std::io::Read> std::io::Read for PeekRead<Read> {
             return self.read_with_pos(buf, pos);
         } else {
             let result = self.ioread.read(buf)?;
-            if unlikely(!self.checkpoints.is_empty()) {
+            if !self.checkpoints.is_empty() {
                 self.buffer.extend(buf[..result].iter());
                 self.pos = Some(result);
             }
@@ -219,7 +217,7 @@ impl<Read: std::io::Read> std::io::Read for PeekRead<Read> {
             return self.read_exact_with_pos(buf, pos);
         } else {
             self.ioread.read_exact(buf)?;
-            if unlikely(!self.checkpoints.is_empty()) {
+            if !self.checkpoints.is_empty() {
                 self.buffer.extend(buf.iter());
                 self.pos = Some(self.buffer.len());
             }
