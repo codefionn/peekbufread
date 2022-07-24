@@ -1,3 +1,25 @@
+//! Allows to peek data of abitrary `std::io::Read` and comes with supports for
+//! checkpoints. Both features work by buffering parts of the original stream.
+//!
+//! This crate is intentionally kept very simple: it only offers the struct
+//! PeekRead and nothing on top of it.
+//!
+//! ## Example
+//!
+//! ```rust
+//! use peekbufread::PeekRead;
+//! use std::io::Read;
+//!
+//! let test = b"hello, world";
+//! let mut read = PeekRead::new(test.as_ref());
+//!
+//! let mut buf = [0; 12];
+//! read.peek(&mut buf).ok();
+//!
+//! let mut buf = [0; 12];
+//! read.read(&mut buf).ok();
+//! ```
+
 #![feature(test)]
 #![feature(core_intrinsics)]
 
