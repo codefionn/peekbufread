@@ -29,5 +29,5 @@ Checkpoint support is optional, but included by default, disable by
 peekbufread = { version = "*", default-features = false }
 ```
 
-This makes the performance of the crate marginally faster (this issue is
+This makes the performance of the crate faster (this issue is
 currently under investigation).
