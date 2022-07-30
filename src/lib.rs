@@ -55,12 +55,6 @@ impl<Read: std::io::Read> PeekRead<Read> {
                 } else {
                     self.pos = Some(0);
                 }
-
-                #[cfg(not(feature = "checkpoint"))]
-                {
-                    self.pos = None;
-                    self.buffer.clear();
-                }
             } else {
                 // Magic size (where to empty data)
                 if pos >= 128 && self.is_checkpoint_empty() {
