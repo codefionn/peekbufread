@@ -4,7 +4,7 @@ name: CI
 
 jobs:
   build:
-    name: Rust project
+    name: Rust project build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -13,12 +13,12 @@ jobs:
         with:
             toolchain: stable
             override: true
-      - name: Run cargo check
+      - name: Run cargo build
         uses: actions-rs/cargo@v1
         with:
           command: build
   test:
-    name: Rust project
+    name: Rust project test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -27,7 +27,7 @@ jobs:
         with:
             toolchain: nightly
             override: true
-      - name: Run cargo check
+      - name: Run cargo test
         uses: actions-rs/cargo@v1
         with:
           command: test
