@@ -31,7 +31,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
-  test:
+  test-no-default-features:
     name: Rust project test (no-default-features)
     runs-on: ubuntu-latest
     steps:
