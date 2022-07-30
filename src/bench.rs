@@ -50,6 +50,7 @@ fn read_exact_normal_peekread(bench: &mut Bencher) {
     });
 }
 
+#[cfg(feature = "checkpoint")]
 #[bench]
 fn read_exact_with_checkpoint_peekread(bench: &mut Bencher) {
     let data = generate_1m();
@@ -105,6 +106,7 @@ fn read_normal_peekread(bench: &mut Bencher) {
     });
 }
 
+#[cfg(feature = "checkpoint")]
 #[bench]
 fn read_with_checkpoint_peekread(bench: &mut Bencher) {
     let data = generate_1m();

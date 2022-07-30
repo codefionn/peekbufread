@@ -220,6 +220,7 @@ fn peek_read_peek() {
     assert_eq!(&test[6..12], &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn checkpoint_read_ok() {
     let test = b"hello, world";
@@ -241,6 +242,7 @@ fn checkpoint_read_ok() {
     assert_eq!(&test[5..], &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn checkpoint_read_err() {
     let test = b"hello, world";
@@ -262,6 +264,7 @@ fn checkpoint_read_err() {
     assert_eq!(test, &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn checkpoint_read_partial_err() {
     let test = b"hello, world";
@@ -283,6 +286,7 @@ fn checkpoint_read_partial_err() {
     assert_eq!(test, &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn checkpoint_peek_exact_err() {
     let test = b"hello, world";
@@ -304,6 +308,7 @@ fn checkpoint_peek_exact_err() {
     assert_eq!(test, &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn checkpoint_peek_exact_partial_err() {
     let test = b"hello, world";
@@ -325,6 +330,7 @@ fn checkpoint_peek_exact_partial_err() {
     assert_eq!(test, &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn read_partial_checkpoint_read_err() {
     let test = b"hello, world";
@@ -351,6 +357,7 @@ fn read_partial_checkpoint_read_err() {
     assert_eq!(&test[6..], &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn read_partial_checkpoint_read_peek_exact_err() {
     let test = b"hello, world";
@@ -377,6 +384,7 @@ fn read_partial_checkpoint_read_peek_exact_err() {
     assert_eq!(&test[6..], &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn checkpoint_ok_in_checkpoint_err() {
     let test = b"hello, world";
@@ -408,6 +416,7 @@ fn checkpoint_ok_in_checkpoint_err() {
     assert_eq!(test, &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn partial_peek_exact_checkpoint_ok_in_checkpoint_err() {
     let test = b"hello, world";
@@ -444,6 +453,7 @@ fn partial_peek_exact_checkpoint_ok_in_checkpoint_err() {
     assert_eq!(&test[4..], &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn checkpoint_ok_after_in_checkpoint_err() {
     let test = b"hello, world";
@@ -475,6 +485,7 @@ fn checkpoint_ok_after_in_checkpoint_err() {
     assert_eq!(test, &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn partial_peek_exact_checkpoint_err_in_checkpoint_err() {
     let test = b"hello, world";
@@ -510,6 +521,7 @@ fn partial_peek_exact_checkpoint_err_in_checkpoint_err() {
     assert_eq!(&test[4..], &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn checkpoint_err_in_checkpoint_err() {
     let test = b"hello, world";
@@ -541,6 +553,7 @@ fn checkpoint_err_in_checkpoint_err() {
     assert_eq!(test, &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn checkpoint_err_equal_in_checkpoint_err() {
     let test = b"hello, world";
@@ -572,6 +585,7 @@ fn checkpoint_err_equal_in_checkpoint_err() {
     assert_eq!(test, &buf);
 }
 
+#[cfg(feature = "checkpoint")]
 #[test]
 fn checkpoint_err_after_in_checkpoint_err() {
     let test = b"hello, world";

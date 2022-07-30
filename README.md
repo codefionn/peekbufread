@@ -22,3 +22,12 @@ Allows to peek data without consuming its contents.
 ## Checkpoints
 
 Allows the program to forget that data of a stream was already read.
+
+Checkpoint support is optional, but included by default, disable by
+
+```
+peekbufread = { version = "*", default-features = false }
+```
+
+This makes the performance of the crate marginally faster (this issue is
+currently under investigation).

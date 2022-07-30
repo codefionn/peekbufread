@@ -40,6 +40,7 @@ pub struct PeekRead<Read: std::io::Read> {
     ioread: Read,
     buffer: Vec<u8>,
     pos: Option<usize>,
+    #[cfg(feature = "checkpoint")]
     checkpoints: Vec<usize>,
 }
 
@@ -48,15 +49,21 @@ impl<Read: std::io::Read> PeekRead<Read> {
     fn consume_buffer_bytes(&mut self, bytes: usize) {
         if let Some(pos) = self.pos {
             if bytes >= self.buffer.len() {
-                if self.checkpoints.is_empty() {
+                if self.is_checkpoint_empty() {
                     self.pos = None;
                     self.buffer.clear();
                 } else {
                     self.pos = Some(0);
                 }
+
+                #[cfg(not(feature = "checkpoint"))]
+                {
+                    self.pos = None;
+                    self.buffer.clear();
+                }
             } else {
                 // Magic size (where to empty data)
-                if pos >= 128 && self.checkpoints.is_empty() {
+                if pos >= 128 && self.is_checkpoint_empty() {
                     for _ in 0..=bytes {
                         self.buffer.remove(0);
                     }
@@ -68,11 +75,24 @@ impl<Read: std::io::Read> PeekRead<Read> {
         }
     }
 
+    #[cfg(feature = "checkpoint")]
+    #[inline]
+    fn is_checkpoint_empty(&self) -> bool {
+        return self.checkpoints.is_empty();
+    }
+
+    #[cfg(not(feature = "checkpoint"))]
+    #[inline]
+    fn is_checkpoint_empty(&self) -> bool {
+        return true;
+    }
+
     pub fn new(read: Read) -> Self {
         Self {
             ioread: read,
             buffer: Vec::new(),
             pos: None,
+            #[cfg(feature = "checkpoint")]
             checkpoints: Vec::new(),
         }
     }
@@ -133,6 +153,7 @@ impl<Read: std::io::Read> PeekRead<Read> {
     /// Creates a checkpoint and calls fn_checkpoint afterwards
     ///
     /// Resets the reader to the current state if an Error is returned. Can be stacked.
+    #[cfg(feature = "checkpoint")]
     #[must_use]
     pub fn checkpoint<T, E, F: FnOnce(&mut Self) -> Result<T, E>>(
         &mut self,
@@ -166,7 +187,7 @@ impl<Read: std::io::Read> PeekRead<Read> {
         } else {
             // The consumed bytes were only partially buffered
             let consumed_reader = self.ioread.read(&mut buf[consumed..])?;
-            if !self.checkpoints.is_empty() {
+            if !self.is_checkpoint_empty() {
                 self.buffer.extend(buf[consumed..].iter());
                 self.pos = Some(self.buffer.len());
             }
@@ -187,7 +208,7 @@ impl<Read: std::io::Read> PeekRead<Read> {
         } else {
             // The consumed bytes were only partially buffered
             self.ioread.read_exact(&mut buf[consumed..])?;
-            if !self.checkpoints.is_empty() {
+            if !self.is_checkpoint_empty() {
                 self.buffer.extend(buf[consumed..].iter());
                 self.pos = Some(self.buffer.len());
             }
@@ -203,7 +224,7 @@ impl<Read: std::io::Read> std::io::Read for PeekRead<Read> {
             return self.read_with_pos(buf, pos);
         } else {
             let result = self.ioread.read(buf)?;
-            if !self.checkpoints.is_empty() {
+            if !self.is_checkpoint_empty() {
                 self.buffer.extend(buf[..result].iter());
                 self.pos = Some(result);
             }
@@ -217,7 +238,7 @@ impl<Read: std::io::Read> std::io::Read for PeekRead<Read> {
             return self.read_exact_with_pos(buf, pos);
         } else {
             self.ioread.read_exact(buf)?;
-            if !self.checkpoints.is_empty() {
+            if !self.is_checkpoint_empty() {
                 self.buffer.extend(buf.iter());
                 self.pos = Some(self.buffer.len());
             }
