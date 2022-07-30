@@ -107,12 +107,12 @@ impl<Read: std::io::Read> PeekRead<Read> {
             } else {
                 let consumed_reader = self.ioread.read(&mut buf[consumed..])?;
                 self.buffer
-                    .extend(buf[consumed..consumed + consumed_reader].iter());
+                    .extend_from_slice(&buf[consumed..consumed + consumed_reader]);
                 return Ok(consumed + consumed_reader);
             }
         } else {
             let result = self.ioread.read(buf)?;
-            self.buffer.extend(buf[..result].iter());
+            self.buffer.extend_from_slice(&buf[..result]);
             self.pos = Some(0);
             return Ok(result);
         }
@@ -133,12 +133,12 @@ impl<Read: std::io::Read> PeekRead<Read> {
                 return Ok(());
             } else {
                 self.ioread.read_exact(&mut buf[consumed..])?;
-                self.buffer.extend(buf[consumed..].iter());
+                self.buffer.extend_from_slice(&buf[consumed..]);
                 return Ok(());
             }
         } else {
             self.ioread.read_exact(buf)?;
-            self.buffer.extend(buf.iter());
+            self.buffer.extend_from_slice(&buf);
             self.pos = Some(0);
             return Ok(());
         }
@@ -182,7 +182,7 @@ impl<Read: std::io::Read> PeekRead<Read> {
             // The consumed bytes were only partially buffered
             let consumed_reader = self.ioread.read(&mut buf[consumed..])?;
             if !self.is_checkpoint_empty() {
-                self.buffer.extend(buf[consumed..].iter());
+                self.buffer.extend_from_slice(&buf[consumed..]);
                 self.pos = Some(self.buffer.len());
             }
             return Ok(consumed + consumed_reader);
@@ -203,7 +203,7 @@ impl<Read: std::io::Read> PeekRead<Read> {
             // The consumed bytes were only partially buffered
             self.ioread.read_exact(&mut buf[consumed..])?;
             if !self.is_checkpoint_empty() {
-                self.buffer.extend(buf[consumed..].iter());
+                self.buffer.extend_from_slice(&buf[consumed..]);
                 self.pos = Some(self.buffer.len());
             }
             return Ok(());
@@ -219,7 +219,7 @@ impl<Read: std::io::Read> std::io::Read for PeekRead<Read> {
         } else {
             let result = self.ioread.read(buf)?;
             if !self.is_checkpoint_empty() {
-                self.buffer.extend(buf[..result].iter());
+                self.buffer.extend_from_slice(&buf[..result]);
                 self.pos = Some(result);
             }
             return Ok(result);
@@ -233,7 +233,7 @@ impl<Read: std::io::Read> std::io::Read for PeekRead<Read> {
         } else {
             self.ioread.read_exact(buf)?;
             if !self.is_checkpoint_empty() {
-                self.buffer.extend(buf.iter());
+                self.buffer.extend_from_slice(&buf);
                 self.pos = Some(self.buffer.len());
             }
             return Ok(());
