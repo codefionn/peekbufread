@@ -31,3 +31,17 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
+  test:
+    name: Rust project test (no-default-features)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: nightly
+            override: true
+      - name: Run cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test --no-default-features
