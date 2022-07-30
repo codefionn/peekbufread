@@ -19,6 +19,57 @@ fn peek_exact() {
 }
 
 #[test]
+fn peek_read_512() {
+    const LEN: usize = 13 * 128;
+    let test = "hello, world!".repeat(LEN / 13).into_bytes();
+    let test: &[u8] = test.as_ref();
+    let mut read = PeekRead::new(test);
+
+    let mut buf: [u8; 128] = [0; 128];
+    let result = read.peek_exact(&mut buf);
+    assert!(result.is_ok());
+    assert_eq!(&test[..128], &buf);
+
+    let mut buf: [u8; 200] = [0; 200];
+    let result = read.peek_exact(&mut buf);
+    assert!(result.is_ok());
+    assert_eq!(&test[..200], &buf);
+
+    let mut buf: [u8; 140] = [0; 140];
+    let result = read.read_exact(&mut buf);
+    assert!(result.is_ok());
+    assert_eq!(&test[..140], &buf);
+
+    let mut buf: [u8; LEN - 140] = [0; LEN - 140];
+    let result = read.read_exact(&mut buf);
+    assert!(result.is_ok());
+    assert_eq!(&test[140..], &buf);
+}
+
+#[test]
+fn peek_read_512_exact_128() {
+    const LEN: usize = 13 * 128;
+    let test = "hello, world!".repeat(LEN / 13).into_bytes();
+    let test: &[u8] = test.as_ref();
+    let mut read = PeekRead::new(test);
+
+    let mut buf: [u8; 128] = [0; 128];
+    let result = read.peek_exact(&mut buf);
+    assert!(result.is_ok());
+    assert_eq!(&test[..128], &buf);
+
+    let mut buf: [u8; 128] = [0; 128];
+    let result = read.read_exact(&mut buf);
+    assert!(result.is_ok());
+    assert_eq!(&test[..128], &buf);
+
+    let mut buf: [u8; LEN - 128] = [0; LEN - 128];
+    let result = read.read_exact(&mut buf);
+    assert!(result.is_ok());
+    assert_eq!(&test[128..], &buf);
+}
+
+#[test]
 fn peek_exact_partial() {
     let test = b"hello, world";
     let mut read = PeekRead::new(test.as_ref());

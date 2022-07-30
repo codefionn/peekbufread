@@ -58,9 +58,7 @@ impl<Read: std::io::Read> PeekRead<Read> {
             } else {
                 // Magic size (where to empty data)
                 if pos >= 128 && self.is_checkpoint_empty() {
-                    for _ in 0..=bytes {
-                        self.buffer.remove(0);
-                    }
+                    self.buffer.drain(..bytes);
                     self.pos = Some(0);
                 } else {
                     self.pos = Some(pos + bytes);
