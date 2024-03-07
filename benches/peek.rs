@@ -1,4 +1,8 @@
-use crate::PeekRead;
+#![feature(test)]
+
+extern crate test;
+
+use peekbufread::PeekRead;
 use rand::prelude::*;
 use std::io::Cursor;
 use test::Bencher;

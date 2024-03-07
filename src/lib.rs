@@ -20,20 +20,6 @@
 //! read.read(&mut buf).ok();
 //! ```
 
-#![cfg(test)]
-#![feature(test)]
-
-#[cfg(test)]
-extern crate test;
-
-#[cfg(test)]
-mod tests;
-#[cfg(test)]
-mod tests_exact;
-
-#[cfg(test)]
-mod bench;
-
 /// Peekable for IO-read. Works by buffering peeked data.
 /// Also supports checkpoints.
 pub struct PeekRead<Read: std::io::Read> {
